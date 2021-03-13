@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 
@@ -71,8 +72,9 @@ public class ServerThread extends Thread
                         	&& command.isDM()) 
                     {
                     	if(piecies.length>2) message.setUserTarget(piecies[3]);
-                    	message.setAlias(piecies[0]);
-                        message.setMessage(piecies[4]);
+                    	message.setAlias(piecies[0].replace("(","").replace(")",""));
+                    	String mensaje=String.join(" ",Arrays.copyOfRange(piecies, 4, piecies.length));
+                        message.setMessage(mensaje);
                         message.setUser(usuario);
                     	mensajeTocliente(message);
                     }

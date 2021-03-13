@@ -22,14 +22,13 @@ public class ClientRunnable implements Runnable {
         
             try {
                 while(!socket.isClosed()) {
-                    if(input.readLine()!=null) 
-                    {
+                    
 	                	String response = input.readLine();
 	                    System.out.println("recibiendo mensaje");
 	                    System.out.println(response);
 	                    String message = ( "(me)" + " : " );
 	                    System.out.print(message);
-                    }                    
+                                        
                 }
             } catch (IOException e) {
                 e.printStackTrace();
