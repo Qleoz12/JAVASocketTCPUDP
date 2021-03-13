@@ -21,9 +21,15 @@ public class ClientRunnable implements Runnable {
     public void run() {
         
             try {
-                while(true) {
-                    String response = input.readLine();
-                    System.out.println(response);
+                while(!socket.isClosed()) {
+                    if(input.readLine().length()==1) 
+                    {
+	                	String response = input.readLine();
+	                    System.out.println("recibiendo mensaje");
+	                    System.out.println(response);
+	                    String message = ( "(me)" + " : " );
+	                    System.out.print(message);
+                    }                    
                 }
             } catch (IOException e) {
                 e.printStackTrace();

@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class cliente {
+public class Cliente {
 
     public static void main(String[] args) {
         try (Socket socket = new Socket("localhost", 5000))
@@ -27,7 +27,8 @@ public class cliente {
             ClientRunnable clientRun = new ClientRunnable(socket);
 
 
-            new Thread(clientRun).start();
+            Thread hilorecepcion=new Thread(clientRun);
+            hilorecepcion.start();
            //loop closes when user enters exit command
            
            do {
@@ -37,26 +38,27 @@ public class cliente {
                     userInput = scanner.nextLine();
                     clientName = userInput;
                     output.println(userInput);
-                    if (userInput.equals("exit")) {
+                    if (userInput.equals("/exit")) {
                         break;
                     }
                } 
                else {
-                    String message = ( "(" + clientName + ")" + " message : " );
-                    //System.out.println(message);
+                    String message = ( "(me)" + " : " );
+                    System.out.print(message);
                     userInput = scanner.nextLine();
-                    output.println(message + " " + userInput);
-                    if (userInput.equals("exit")) {
-                        //reading the input from server
+                    output.println( "("+clientName+")" + " : "+userInput);
+                    if (userInput.equalsIgnoreCase("/exit")) 
+                    {                  	
+                    	System.out.print("adios! "+clientName);
                         break;
                     }
                 }
 
-           } while (!userInput.equals("exit"));
+           } while (!userInput.equals("/exit"));
            
-
-
-            
+           output.println(userInput);
+           hilorecepcion.interrupt();;
+           return; 
         } catch (Exception e) {
             System.out.println("Exception occured in client main: " + e.getStackTrace());
     }

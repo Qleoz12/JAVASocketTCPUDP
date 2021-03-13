@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 public class Server {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         //using serversocket as argument to automatically close the socket
         //the port number is unique for each server
 
@@ -15,13 +16,14 @@ public class Server {
         try (ServerSocket serversocket = new ServerSocket(5000)){
             while(true) {
                 Socket socket = serversocket.accept();
-                String hostName = socket.getInetAddress().getHostName();
                 ServerThread serverThread = new ServerThread(socket, threadList);
-                serverThread.setUsuario(hostName);
+                
+                
+                serverThread.setIp(serverThread.getip(socket).toString());
+                serverThread.setUsuario(socket.getInetAddress().getHostName());
                 //starting the thread
                 threadList.add(serverThread); 
                 serverThread.start();
-
                 //get all the list of currently running thread
 
             }
