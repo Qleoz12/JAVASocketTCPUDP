@@ -29,6 +29,7 @@ public class Server {
             }
         } catch (Exception e) {
             System.out.println("Error occured in main: " + e.getStackTrace());
+            e.printStackTrace();
         }
     }
 }

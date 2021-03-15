@@ -26,9 +26,13 @@ public class ServerThread extends Thread
     private String ip;
     private Integer code;
     
+    private HandlerUdp handlerUdp;
+    
     public ServerThread(Socket socket, ArrayList<ServerThread> threads) {
         this.socket = socket;
         this.threadList = threads;
+        handlerUdp=new HandlerUdp();
+        handlerUdp.createAndListenSocket();
     }
 
     @Override
