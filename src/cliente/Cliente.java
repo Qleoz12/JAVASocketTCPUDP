@@ -16,7 +16,7 @@ public class Cliente {
 
 	
 	public static void main(String[] args) {
-		try (Socket socket = new Socket("localhost", 5000)) {
+		try (Socket socket = new Socket("25.85.105.161", 5000)) {
 			// reading the input from server
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -52,6 +52,7 @@ public class Cliente {
 					output.println(userInput);
 					if (userInput.equals("/exit")) {
 						break;
+						
 					}
 				} else {
 					String message = ("(me)" + " : ");
@@ -61,17 +62,26 @@ public class Cliente {
 					if (userInput.equalsIgnoreCase("/exit"))
 					{
 						System.out.print("adios! " + clientName);
+						hilorecepcion.interrupt();
+						handlerUdp.interrupt();
+						output.close();
+						socket.close();
 						break;
 					}
 					
 					if (userInput.contains("/send"))
 					{
+						clienteUDP.setIpAddres("25.85.105.161");
+						clienteUDP.setPath(PathStatus.toServer);
 						String[] piecies=userInput.split("\\s+");
 						if(piecies.length>2)
 						{
-							clienteUDP.setPath(PathStatus.toServer);
-							clienteUDP.sendFile(System.getenv("SystemDrive")+"/chat/send/"+piecies[1], System.getenv("SystemDrive")+"/chat/receive/");
+							clienteUDP.sendFile(System.getenv("SystemDrive")+"/chat/send/"+piecies[2], System.getenv("SystemDrive")+"/chat/receive",piecies[1]);
 						}
+						
+							clienteUDP.sendFile(System.getenv("SystemDrive")+"/chat/send/"+piecies[1], System.getenv("SystemDrive")+"/chat/receive");
+						
+						
 					}
 					
 					
@@ -79,10 +89,8 @@ public class Cliente {
 
 			} while (!userInput.equals("/exit"));
 
-			output.println(userInput);
-			hilorecepcion.interrupt();
-			;
-			return;
+			
+			System.exit(0);
 		} catch (Exception e) {
 			System.out.println("Exception occured in client main: " + e.getStackTrace());
 			e.printStackTrace();
