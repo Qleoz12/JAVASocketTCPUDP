@@ -24,11 +24,11 @@ public class Server {
                 HandlerTCP handlerTCP=new HandlerTCP(socket, threadList);
                 
                 
-                handlerTCP.setIp(handlerTCP.getip(socket).toString());
+                handlerTCP.setIp(handlerTCP.getip(socket).toString().replace("/", ""));
                 handlerTCP.setUsuario(socket.getInetAddress().getHostName());
-                
                 handlerTCP.start();
                
+                handlerUdp.setThreads(threadList);
                 
                 ServerThread serverThread = new ServerThread(handlerUdp,handlerTCP);
                 threadList.add(serverThread); 

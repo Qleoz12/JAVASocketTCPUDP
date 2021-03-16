@@ -46,7 +46,6 @@ public class HandlerUdp extends Thread
 				
 				if (fileEvent.getStatus().equalsIgnoreCase("Error")) {
 					System.out.println("Some issue happened while packing the data @ client side");
-					System.exit(0);
 				}
 				
 				createAndWriteFile(); // writing the file to hard disk
@@ -78,15 +77,16 @@ public class HandlerUdp extends Thread
 	throws IOException, InterruptedException 
 	{
 		clienteUDP= new ClienteUDP();
+		clienteUDP.createConnection();
 		fileEvent.setPath(PathStatus.toClient);
 		if(fileEvent.getUserTarget()!=null) 
 		{
 			for (int i = 0; i < threads.size(); i++)
 			{
-				if(threads.get(i).getHandlerTCP().getAlias()==fileEvent.getUserTarget())
+				if(threads.get(i).getHandlerTCP().getAlias().equalsIgnoreCase(fileEvent.getUserTarget()))
 				{
 					clienteUDP.setIpAddres(threads.get(i).getHandlerTCP().getIp());
-					clienteUDP.sendFile(fileEvent.getDestinationDirectory(), fileEvent.getDestinationDirectory() );
+					clienteUDP.sendFile(fileEvent.getDestinationDirectory()+"/"+fileEvent.getFilename(), fileEvent.getDestinationDirectory() );
 				}
 			}
 		}
@@ -96,7 +96,7 @@ public class HandlerUdp extends Thread
 			{
 				
 					clienteUDP.setIpAddres(threads.get(i).getHandlerTCP().getIp());
-					clienteUDP.sendFile(fileEvent.getDestinationDirectory(), fileEvent.getDestinationDirectory() );
+					clienteUDP.sendFile(fileEvent.getDestinationDirectory()+"/"+fileEvent.getFilename(), fileEvent.getDestinationDirectory() );
 			}
 			
 		}
@@ -104,7 +104,7 @@ public class HandlerUdp extends Thread
 
 	public void createAndWriteFile() 
 	{
-		String outputFile = fileEvent.getDestinationDirectory() + fileEvent.getFilename();
+		String outputFile = fileEvent.getDestinationDirectory()+"/"+ fileEvent.getFilename();
 		if (!new File(fileEvent.getDestinationDirectory()).exists()) {
 			new File(fileEvent.getDestinationDirectory()).mkdirs();
 		}

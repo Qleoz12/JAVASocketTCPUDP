@@ -62,7 +62,7 @@ public class HandlerTCP extends Thread
                 String[] piecies=outputString.split("\\s+");
                 if(alias!=null) 
                 {
-                	String alias=piecies[0];
+                	String alias=piecies[0].replace("(", "").replace(")", "");
                     String messagedata=piecies[2];
                     message.setAlias(alias);
                     message.setMessage(messagedata);
@@ -98,7 +98,7 @@ public class HandlerTCP extends Thread
                     	for (int i = 0; i < threadList.size(); i++)
                     	{
                     		System.out.println("- "+threadList.get(i).getHandlerTCP().getAlias()+"-"+ alias);
-                    		if(threadList.get(i).getHandlerTCP().getAlias()==alias) 
+                    		if(threadList.get(i).getHandlerTCP().getAlias().equalsIgnoreCase(alias)) 
                     		{
                     			System.out.println("desconectando a usuario " + usuario+" "+alias);
                     			threadList.remove(i);
@@ -128,6 +128,7 @@ public class HandlerTCP extends Thread
 
         } catch (Exception e) {
             System.out.println("Error occured " +e.getStackTrace());
+            e.printStackTrace();
         }
     }
     
