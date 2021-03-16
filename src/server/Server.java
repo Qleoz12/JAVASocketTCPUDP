@@ -4,6 +4,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import multiclientScoketsTCPUDP.HandlerUdp;
+
 public class Server {
 
     public static void main(String[] args)
@@ -13,17 +15,23 @@ public class Server {
 
         //list to add all the clients thread
         ArrayList<ServerThread> threadList = new ArrayList<>();
+        HandlerUdp handlerUdp=new HandlerUdp();
+        handlerUdp.start();
+        
         try (ServerSocket serversocket = new ServerSocket(5000)){
             while(true) {
                 Socket socket = serversocket.accept();
-                ServerThread serverThread = new ServerThread(socket, threadList);
+                HandlerTCP handlerTCP=new HandlerTCP(socket, threadList);
                 
                 
-                serverThread.setIp(serverThread.getip(socket).toString());
-                serverThread.setUsuario(socket.getInetAddress().getHostName());
-                //starting the thread
+                handlerTCP.setIp(handlerTCP.getip(socket).toString());
+                handlerTCP.setUsuario(socket.getInetAddress().getHostName());
+                
+                handlerTCP.start();
+               
+                
+                ServerThread serverThread = new ServerThread(handlerUdp,handlerTCP);
                 threadList.add(serverThread); 
-                serverThread.start();
                 //get all the list of currently running thread
 
             }

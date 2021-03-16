@@ -1,4 +1,4 @@
-package cliente;
+package multiclientScoketsTCPUDP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -11,16 +11,13 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import server.FileEvent;
-
-
 public class ClienteUDP {
-	
-	
+
 	private DatagramSocket socket = null;
 	private FileEvent event = null;
-	 
-	 
+	private String ipAddres= "localHost";
+	private PathStatus path;
+	
 	public ClienteUDP() {
 		// TODO Auto-generated constructor stub
 	}
@@ -29,18 +26,16 @@ public class ClienteUDP {
 		try {
 
 			socket = new DatagramSocket();
-	
+			
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void sendFile(String sourceFilePath,String destinationPath) 
-	throws IOException, InterruptedException
-	{
-		InetAddress IPAddress = InetAddress.getByName("localHost");
+	public void sendFile(String sourceFilePath, String destinationPath) throws IOException, InterruptedException {
+		InetAddress IPAddress = InetAddress.getByName(ipAddres);
 		byte[] incomingData = new byte[1024];
-		event = getFileEvent(sourceFilePath,destinationPath);
+		event = getFileEvent(sourceFilePath, destinationPath);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ObjectOutputStream os = new ObjectOutputStream(outputStream);
 		os.writeObject(event);
@@ -54,10 +49,30 @@ public class ClienteUDP {
 		Thread.sleep(2000);
 		System.out.println("Response from server:" + response);
 	}
-	
-	public FileEvent getFileEvent(String sourceFilePath,String destinationPath)
-	{
+
+	public void sendFile(String sourceFilePath, String destinationPath, String userTarget)
+			throws IOException, InterruptedException {
+		InetAddress IPAddress = InetAddress.getByName(ipAddres);
+		byte[] incomingData = new byte[1024];
+		event = getFileEvent(sourceFilePath, destinationPath);
+		event.setUserTarget(userTarget);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		ObjectOutputStream os = new ObjectOutputStream(outputStream);
+		os.writeObject(event);
+		byte[] data = outputStream.toByteArray();
+		DatagramPacket sendPacket = new DatagramPacket(data, data.length, IPAddress, 9876);
+		socket.send(sendPacket);
+		System.out.println("File sent from client");
+		DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
+		socket.receive(incomingPacket);
+		String response = new String(incomingPacket.getData());
+		Thread.sleep(2000);
+		System.out.println("Response from server:" + response);
+	}
+
+	public FileEvent getFileEvent(String sourceFilePath, String destinationPath) {
 		FileEvent fileEvent = new FileEvent();
+		fileEvent.setPath(path);
 		String fileName = sourceFilePath.substring(sourceFilePath.lastIndexOf("/") + 1, sourceFilePath.length());
 		String path = sourceFilePath.substring(0, sourceFilePath.lastIndexOf("/") + 1);
 		fileEvent.setDestinationDirectory(destinationPath);
@@ -88,4 +103,22 @@ public class ClienteUDP {
 		}
 		return fileEvent;
 	}
+
+	public String getIpAddres() {
+		return ipAddres;
+	}
+
+	public void setIpAddres(String ipAddres) {
+		this.ipAddres = ipAddres;
+	}
+
+	public PathStatus getPath() {
+		return path;
+	}
+
+	public void setPath(PathStatus path) {
+		this.path = path;
+	}
+	
+	
 }

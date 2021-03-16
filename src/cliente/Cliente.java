@@ -6,10 +6,15 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
+import multiclientScoketsTCPUDP.ClienteUDP;
+import multiclientScoketsTCPUDP.HandlerUdp;
+import multiclientScoketsTCPUDP.PathStatus;
+import server.HandlerTCP;
+
 public class Cliente {
 
-	
 
+	
 	public static void main(String[] args) {
 		try (Socket socket = new Socket("localhost", 5000)) {
 			// reading the input from server
@@ -30,8 +35,12 @@ public class Cliente {
 
 			Thread hilorecepcion = new Thread(clientRun);
 			hilorecepcion.start();
+			
 			ClienteUDP clienteUDP=new ClienteUDP();
 			clienteUDP.createConnection();
+			
+			HandlerUdp handlerUdp=new HandlerUdp();
+			handlerUdp.start();
 			// loop closes when user enters exit command
 
 			do {
@@ -58,8 +67,11 @@ public class Cliente {
 					if (userInput.contains("/send"))
 					{
 						String[] piecies=userInput.split("\\s+");
-						
-						clienteUDP.sendFile(System.getenv("SystemDrive")+"/chat/send/"+piecies[1], System.getenv("SystemDrive")+"/chat/receive/");
+						if(piecies.length>2)
+						{
+							clienteUDP.setPath(PathStatus.toServer);
+							clienteUDP.sendFile(System.getenv("SystemDrive")+"/chat/send/"+piecies[1], System.getenv("SystemDrive")+"/chat/receive/");
+						}
 					}
 					
 					

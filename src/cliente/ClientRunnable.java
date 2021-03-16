@@ -30,8 +30,10 @@ public class ClientRunnable implements Runnable {
 	                    System.out.print(message);
                                         
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException e)
+            {
+            	System.out.print("deslogueo");
+            	
             } finally {
                 try {
                     input.close();

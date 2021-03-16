@@ -1,4 +1,4 @@
-package server;
+package multiclientScoketsTCPUDP;
 
 import java.io.Serializable;
 
@@ -16,6 +16,16 @@ public class FileEvent implements Serializable {
 	private long fileSize;
 	private byte[] fileData;
 	private String status;
+	private PathStatus path;
+
+	
+	public PathStatus getPath() {
+		return path;
+	}
+
+	public void setPath(PathStatus path) {
+		this.path = path;
+	}
 
 	public String getDestinationDirectory() {
 		return destinationDirectory;

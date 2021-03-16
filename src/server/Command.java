@@ -9,14 +9,14 @@ public class Command {
     private boolean isDM = false;
     private boolean isInfo = false;
     private boolean isExit=false;
-    private ServerThread server;
+    private HandlerTCP server;
     
     public final String USERS="/users";
 	
     
-    public Command(String userInput, ServerThread server) {
+    public Command(String userInput, HandlerTCP handlerTCP) {
         this.userInput = userInput;
-        this.server = server;
+        this.server = handlerTCP;
         this.execute();
     }
 
@@ -32,9 +32,9 @@ public class Command {
                     this.message = "Current online users:";
                     for (ServerThread user : this.server.getThreadList() )
                     {	
-                    	if(user.getAlias()!=server.getAlias()) 
+                    	if(user.getHandlerTCP().getAlias()!=server.getAlias()) 
                     	{
-                    		this.message += "\n\t" + user.getIp()+"\t"+user.getAlias();
+                    		this.message += "\n\t" + user.getHandlerTCP().getIp()+"\t"+user.getHandlerTCP().getAlias();
                     	}
                     }
                     break;

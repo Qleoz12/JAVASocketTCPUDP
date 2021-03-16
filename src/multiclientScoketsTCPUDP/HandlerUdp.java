@@ -1,4 +1,4 @@
-package server;
+package multiclientScoketsTCPUDP;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -10,18 +10,30 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
+import server.ServerThread;
 
-public class HandlerUdp {
+public class HandlerUdp extends Thread
+{
 
 	private DatagramSocket socket = null;
 	private FileEvent fileEvent = null;
-
-	public HandlerUdp() {
-		super();
+	private ArrayList<ServerThread> threads;
+	private ClienteUDP clienteUDP;
+	
+	public HandlerUdp() 
+	{
 	}
 
+
+	@Override
+	public void run() {
+		this.createAndListenSocket();
+	}
+
+
 	public void createAndListenSocket() {
-		try {
+		try{
 			socket = new DatagramSocket(9876);
 			byte[] incomingData = new byte[1024 * 1000 * 50];
 			while (true) {
@@ -31,19 +43,23 @@ public class HandlerUdp {
 				ByteArrayInputStream in = new ByteArrayInputStream(data);
 				ObjectInputStream is = new ObjectInputStream(in);
 				fileEvent = (FileEvent) is.readObject();
+				
 				if (fileEvent.getStatus().equalsIgnoreCase("Error")) {
 					System.out.println("Some issue happened while packing the data @ client side");
 					System.exit(0);
 				}
+				
 				createAndWriteFile(); // writing the file to hard disk
+				if(fileEvent.getPath().equals(PathStatus.toServer))
+				{
+					processFile();
+				}
 				InetAddress IPAddress = incomingPacket.getAddress();
 				int port = incomingPacket.getPort();
 				String reply = "Thank you for the message";
 				byte[] replyBytea = reply.getBytes();
 				DatagramPacket replyPacket = new DatagramPacket(replyBytea, replyBytea.length, IPAddress, port);
 				socket.send(replyPacket);
-				
-
 			}
 
 		} catch (SocketException e) {
@@ -52,10 +68,42 @@ public class HandlerUdp {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void processFile() 
+	throws IOException, InterruptedException 
+	{
+		clienteUDP= new ClienteUDP();
+		fileEvent.setPath(PathStatus.toClient);
+		if(fileEvent.getUserTarget()!=null) 
+		{
+			for (int i = 0; i < threads.size(); i++)
+			{
+				if(threads.get(i).getHandlerTCP().getAlias()==fileEvent.getUserTarget())
+				{
+					clienteUDP.setIpAddres(threads.get(i).getHandlerTCP().getIp());
+					clienteUDP.sendFile(fileEvent.getDestinationDirectory(), fileEvent.getDestinationDirectory() );
+				}
+			}
+		}
+		if(fileEvent.getUserTarget()==null) 
+		{
+			for (int i = 0; i < threads.size(); i++)
+			{
+				
+					clienteUDP.setIpAddres(threads.get(i).getHandlerTCP().getIp());
+					clienteUDP.sendFile(fileEvent.getDestinationDirectory(), fileEvent.getDestinationDirectory() );
+			}
+			
 		}
 	}
 
-	public void createAndWriteFile() {
+	public void createAndWriteFile() 
+	{
 		String outputFile = fileEvent.getDestinationDirectory() + fileEvent.getFilename();
 		if (!new File(fileEvent.getDestinationDirectory()).exists()) {
 			new File(fileEvent.getDestinationDirectory()).mkdirs();
@@ -78,4 +126,34 @@ public class HandlerUdp {
 		}
 
 	}
+
+	public DatagramSocket getSocket() {
+		return socket;
+	}
+
+	public void setSocket(DatagramSocket socket) {
+		this.socket = socket;
+	}
+
+	public ArrayList<ServerThread> getThreads() {
+		return threads;
+	}
+
+	public void setThreads(ArrayList<ServerThread> threads) {
+		this.threads = threads;
+	}
+
+
+	public FileEvent getFileEvent() {
+		return fileEvent;
+	}
+
+
+	public void setFileEvent(FileEvent fileEvent) {
+		this.fileEvent = fileEvent;
+	}
+	
+	
+	
+	
 }
