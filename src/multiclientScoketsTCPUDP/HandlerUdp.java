@@ -49,7 +49,7 @@ public class HandlerUdp extends Thread
 				}
 				
 				createAndWriteFile(); // writing the file to hard disk
-				if(fileEvent.getPath().equals(PathStatus.toServer))
+				if(fileEvent.getPath()!=null && fileEvent.getPath().equals(PathStatus.toServer))
 				{
 					processFile();
 				}
@@ -117,7 +117,7 @@ public class HandlerUdp extends Thread
 			fileOutputStream.write(fileEvent.getFileData());
 			fileOutputStream.flush();
 			fileOutputStream.close();
-			System.out.println("Output file : " + outputFile + " is successfully saved ");
+			//System.out.println("Output file : " + outputFile + " is successfully saved ");
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

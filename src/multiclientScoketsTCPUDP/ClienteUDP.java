@@ -42,12 +42,12 @@ public class ClienteUDP {
 		byte[] data = outputStream.toByteArray();
 		DatagramPacket sendPacket = new DatagramPacket(data, data.length, IPAddress, 9876);
 		socket.send(sendPacket);
-		System.out.println("File sent from client");
+		//System.out.println("File sent from client");
 		DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
 		socket.receive(incomingPacket);
 		String response = new String(incomingPacket.getData());
 		Thread.sleep(2000);
-		System.out.println("Response from server:" + response);
+		//System.out.println("Response from server:" + response);
 	}
 
 	public void sendFile(String sourceFilePath, String destinationPath, String userTarget)
