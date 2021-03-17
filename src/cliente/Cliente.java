@@ -74,12 +74,16 @@ public class Cliente {
 						clienteUDP.setIpAddres("25.85.105.161");
 						clienteUDP.setPath(PathStatus.toServer);
 						String[] piecies=userInput.split("\\s+");
-						if(piecies.length>2)
+						if(piecies.length==3)
 						{
 							clienteUDP.sendFile(System.getenv("SystemDrive")+"/chat/send/"+piecies[2], System.getenv("SystemDrive")+"/chat/receive",piecies[1]);
 						}
 						
+						if(piecies.length==2)
+						{
 							clienteUDP.sendFile(System.getenv("SystemDrive")+"/chat/send/"+piecies[1], System.getenv("SystemDrive")+"/chat/receive");
+						}
+						
 						
 						
 					}
