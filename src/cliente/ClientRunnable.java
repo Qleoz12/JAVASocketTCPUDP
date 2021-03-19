@@ -32,7 +32,7 @@ public class ClientRunnable implements Runnable {
                 }
             } catch (IOException e)
             {
-            	System.out.print("deslogueo");
+            	System.out.print(" deslogueo ");
             	
             } finally {
                 try {
